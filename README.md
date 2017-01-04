@@ -1,7 +1,7 @@
 # rfortune
 A simple Rust fortune-like webapp with Rocket
 
-![A screenshot of rfortune in action](screenshot.jpg)
+![A screenshot of rfortune in action](https://github.com/SilverWingedSeraph/rfortune/blob/master/screenshot.png)
 
 ## What
 This simple webapp reads quotes from a CSV file and picks a random one to return
