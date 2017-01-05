@@ -5,7 +5,7 @@ use quotes;
 #[get("/")]
 pub fn index_html() -> HTML<String> {
     let quote = quotes::get_random_quote(&PathBuf::from("static/quotes.csv")).unwrap();
-    let source = quotes::get_source_text_from_quote(&quote);
+    let source = quotes::get_source_from_quote_as_json(&quote);
     HTML(format!("
     <html>
     <head>
@@ -80,7 +80,7 @@ pub fn index_html() -> HTML<String> {
 #[get("/json")]
 pub fn json() -> JSON<String> {
     let quote = quotes::get_random_quote(&PathBuf::from("static/quotes.csv")).unwrap();
-    let source = quotes::get_source_json_from_quote(&quote);
+    let source = quotes::get_source_from_quote_as_json(&quote);
     JSON(format!("{{
         \"quote\": \"{}\",
         \"author\": \"{}\",

@@ -1,16 +1,24 @@
-pub fn parse_args(args: Vec<String>) -> Result<(bool, String), String>
+pub enum Mode {
+    Execute,
+    Initialize,
+    List,
+    Add
+}
+
+pub fn parse_args(args: Vec<String>) -> Result<(Mode, String), String>
 {
-    let do_init: bool;
+    let mode: Mode;
     let database_path: String;
 
     if args.len() < 2 {
-        return Err(format!("Usage: {0} init [path to database] or {0} exec [path to database]", args[0]));
+        return Err(format!("Usage: {0} init|exec|list [path to database] or {0} add [path to database]", args[0]));
     }
 
     match args[1].as_str() {
-        "init" | "initialize" => {do_init = true;}
-        "exec" | "execute" => {do_init = false;}
-        &_ => {return Err("First argument must be either init(ialize) or exec(ute).".into());}
+        "init" | "initialize" => {mode = Mode::Initialize;}
+        "exec" | "execute" => {mode = Mode::Initialize;}
+        "list" => {mode = Mode::List;}
+        &_ => {return Err("First argument must be init(ialize), exec(ute), or list.".into());}
     }
 
     if args.len() < 3 {
@@ -19,5 +27,5 @@ pub fn parse_args(args: Vec<String>) -> Result<(bool, String), String>
         database_path = String::from(args[2].clone());
     };
 
-    return Ok((do_init, database_path));
+    return Ok((mode, database_path));
 }

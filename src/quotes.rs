@@ -5,14 +5,14 @@ use rand;
 
 pub type Quote = (String, String, Option<String>);
 
-pub fn get_source_text_from_quote(quote: &Quote) -> String {
+pub fn get_source_from_quote_as_text(quote: &Quote) -> String {
     match quote.2 {
         Some(ref s) => s.clone(),
         None => String::from("No source.")
     }
 }
 
-pub fn get_source_json_from_quote(quote: &Quote) -> String {
+pub fn get_source_from_quote_as_json(quote: &Quote) -> String {
     match quote.2 {
         Some(ref s) => format!("\"{}\"", s),
         None => String::from("null")
