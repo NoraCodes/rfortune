@@ -27,6 +27,7 @@ fn fake_main() -> i32 {
     };
     let mode: args::Mode = parsing_results.0;
     let database_path: String = parsing_results.1;
+    let quote_to_add: Option<quotes::Quote> = parsing_results.2;
 
     if database_path == ":memory:" {
     println!("Opening SQLite database in memory.");
@@ -61,7 +62,16 @@ fn fake_main() -> i32 {
                 println!("Quote: {} - {} ({})", quote.0, quote.1, source);
             }
         }
-        Mode::Add => {}
+        Mode::Add => {
+            if quote_to_add.is_none() {
+                println!("[FATAL] Asked to add a nonexistant quote.");
+                return 1;
+            }
+            let result = database::add_quote(&mut db_connection, &quote_to_add.unwrap());
+            if result.is_err() {
+                println!("[FATAL] Failed to add quote. {:?}", result.err().unwrap())
+            }
+        }
     };
     return 0
 }
