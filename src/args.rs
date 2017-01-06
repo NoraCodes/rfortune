@@ -15,7 +15,11 @@ pub fn parse_args(args: Vec<String>) -> Result<(Mode, String, Option<Quote>), St
     let quote: Option<Quote>;
 
     if args.len() < 2 {
-        return Err(format!("Usage: {0} init|exec|list [path to database] or {0} add [path to database] quote author [source]", args[0]));
+        return Err(format!("
+Usage:  {0} init [path to database]
+        {0} list [path to database]
+        {0} exec
+        {0} add [path to database] quote author [source]", args[0]));
     }
 
     if args.len() < 3 {
