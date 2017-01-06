@@ -39,7 +39,7 @@ pub fn add_quote(connection: &mut Connection, quote: &Quote) -> Result<(), Error
 
 pub fn get_quotes(connection: &mut Connection) -> Result<Vec<Quote>, Error> {
     let mut statement = connection.prepare(DATABASE_QUERY_ALL_SQL)?;
-    let mut maybe_quotes_iter = statement.query_map(&[], |row| {
+    let maybe_quotes_iter = statement.query_map(&[], |row| {
         (row.get::<_, String>(1), row.get::<_, String>(2), row.get::<_, Option<String>>(3))
     })?;
 
