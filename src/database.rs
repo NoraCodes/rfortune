@@ -2,8 +2,7 @@ use rusqlite::{Connection, Error};
 use quotes::Quote;
 
 // SQL to create the quotes table in the database
-//
-const DATABASE_INIT_SQL: &'static str =
+const SQL_INIT_DATABASE: &'static str =
 " CREATE TABLE quotes (
     id          INTEGER PRIMARY KEY,
     quote       TEXT NOT NULL,
@@ -11,10 +10,11 @@ const DATABASE_INIT_SQL: &'static str =
     source      TEXT
 )";
 
-const DATABASE_INSERT_QUOTE_SQL: &'static str =
+
+const SQL_INSERT_QUOTE: &'static str =
 " INSERT INTO quotes (quote, author, source) VALUES (?1, ?2, ?3)";
 
-const DATABASE_QUERY_ALL_SQL: &'static str =
+const SQL_QUERY_ALL_QUOTES: &'static str =
 " SELECT * FROM quotes ";
 
 pub fn get_database_connection(location: String) -> Result<Connection, Error> {
@@ -28,17 +28,17 @@ pub fn get_database_connection(location: String) -> Result<Connection, Error> {
 }
 
 pub fn initialize(connection: &mut Connection) -> Result<(), Error> {
-    connection.execute(DATABASE_INIT_SQL, &[])?;
+    connection.execute(SQL_INIT_DATABASE, &[])?;
     Ok(())
 }
 
 pub fn add_quote(connection: &mut Connection, quote: &Quote) -> Result<(), Error> {
-    connection.execute(DATABASE_INSERT_QUOTE_SQL, &[&quote.0, &quote.1, &quote.2])?;
+    connection.execute(SQL_INSERT_QUOTE, &[&quote.0, &quote.1, &quote.2])?;
     Ok(())
 }
 
 pub fn get_quotes(connection: &mut Connection) -> Result<Vec<Quote>, Error> {
-    let mut statement = connection.prepare(DATABASE_QUERY_ALL_SQL)?;
+    let mut statement = connection.prepare(SQL_QUERY_ALL_QUOTES)?;
     let maybe_quotes_iter = statement.query_map(&[], |row| {
         (row.get::<_, String>(1), row.get::<_, String>(2), row.get::<_, Option<String>>(3))
     })?;
