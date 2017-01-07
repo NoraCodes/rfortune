@@ -1,11 +1,7 @@
-use std::fs::File;
-use std::path::PathBuf;
-use csv;
 use rand;
 use database;
 
 use rocket::config;
-use rocket::Error;
 
 pub type Quote = (String, String, Option<String>);
 

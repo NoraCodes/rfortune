@@ -1,5 +1,4 @@
 use rocket::response::content::{HTML, JSON};
-use std::path::PathBuf;
 use quotes;
 
 #[get("/")]
