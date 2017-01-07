@@ -1,0 +1,17 @@
+[development]
+db_path = "dev.db"
+
+# NOTE: Do NOT !!! !!! use these keys; instead generate random keys
+# for example with
+# dd if=/dev/urandom bs=24 count=1 | base64 >> key.b64
+# and copy and paste here. Must be 24 bytes base64 encoded.
+
+[staging]
+db_path = "stage.db"
+session_key = "RAdUdcco7SwzbyWxd8UOkM5ekezIRjsO"
+
+[production]
+address = "0.0.0.0"
+port = 80
+db_path = "prod.db"
+session_key = "Xu2sLzKhBOxj3TXlFcZooLeooQMp5V0m"
