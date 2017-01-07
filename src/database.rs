@@ -33,14 +33,14 @@ pub fn initialize(connection: &mut Connection) -> Result<(), Error> {
 }
 
 pub fn add_quote(connection: &mut Connection, quote: &Quote) -> Result<(), Error> {
-    connection.execute(SQL_INSERT_QUOTE, &[&quote.0, &quote.1, &quote.2])?;
+    connection.execute(SQL_INSERT_QUOTE, &[&quote.quote, &quote.author, &quote.source])?;
     Ok(())
 }
 
 pub fn get_quotes(connection: &mut Connection) -> Result<Vec<Quote>, Error> {
     let mut statement = connection.prepare(SQL_QUERY_ALL_QUOTES)?;
     let maybe_quotes_iter = statement.query_map(&[], |row| {
-        (row.get::<_, String>(1), row.get::<_, String>(2), row.get::<_, Option<String>>(3))
+        Quote::new(row.get::<_, String>(1), row.get::<_, String>(2), row.get::<_, Option<String>>(3))
     })?;
 
     let mut quotes = Vec::new();

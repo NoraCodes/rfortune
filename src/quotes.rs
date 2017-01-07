@@ -3,19 +3,26 @@ use database;
 
 use rocket::config;
 
-pub type Quote = (String, String, Option<String>);
-
-pub fn get_source_from_quote_as_text(quote: &Quote) -> String {
-    match quote.2 {
-        Some(ref s) => s.clone(),
-        None => String::from("No source.")
-    }
+#[derive(Clone, Serialize, Deserialize)]
+pub struct Quote {
+    pub quote: String,
+    pub author: String,
+    pub source: Option<String>
 }
 
-pub fn get_source_from_quote_as_json(quote: &Quote) -> String {
-    match quote.2 {
-        Some(ref s) => format!("\"{}\"", s),
-        None => String::from("null")
+impl Quote {
+    pub fn new(quote: String, author: String, source: Option<String>) -> Quote {
+        Quote {
+            quote: quote,
+            author: author,
+            source: source
+        }
+    }
+    pub fn get_source_as_text(self: &Self) -> String {
+        match self.source {
+            Some(ref s) => s.clone(),
+            None => String::from("No source.")
+        }
     }
 }
 

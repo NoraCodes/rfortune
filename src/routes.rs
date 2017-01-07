@@ -1,10 +1,17 @@
 use rocket::response::content::{HTML, JSON};
+use serde_json;
 use quotes;
 
 #[get("/")]
 pub fn index_html() -> HTML<String> {
-    let quote = quotes::get_random_quote().unwrap();
-    let source = quotes::get_source_from_quote_as_text(&quote);
+    let quote = match quotes::get_random_quote() {
+        Some(q) => q,
+        None => {return HTML("
+        The database could not be accessed.
+        If you are the administrator of this instance,
+        you must initialize the database.".into())}
+    };
+    let source_text = quote.get_source_as_text();
     HTML(format!("
     <html>
     <head>
@@ -73,16 +80,11 @@ pub fn index_html() -> HTML<String> {
     </div>
     </body>
     </html>
-    ", quote.0, quote.1, source))
+    ", quote.quote, quote.author, source_text))
 }
 
 #[get("/json")]
 pub fn json() -> JSON<String> {
     let quote = quotes::get_random_quote().unwrap();
-    let source = quotes::get_source_from_quote_as_json(&quote);
-    JSON(format!("{{
-        \"quote\": \"{}\",
-        \"author\": \"{}\",
-        \"source\": {}
-    }}", quote.0, quote.1, source))
+    JSON(serde_json::to_string(&quote).unwrap())
 }

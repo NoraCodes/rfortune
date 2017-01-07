@@ -4,8 +4,10 @@
 
 extern crate rocket;
 extern crate rand;
-extern crate csv;
 extern crate rusqlite;
+
+#[macro_use] extern crate serde_derive;
+extern crate serde_json;
 
 mod quotes;
 mod routes;
@@ -58,8 +60,8 @@ fn fake_main() -> i32 {
                 }
             };
             for quote in quotes_vec {
-                let source = quotes::get_source_from_quote_as_text(&quote);
-                println!("Quote: {} - {} ({})", quote.0, quote.1, source);
+                let source_text = quote.get_source_as_text();
+                println!("Quote: {} - {} ({})", quote.quote, quote.author, source_text);
             }
         }
         Mode::Add => {

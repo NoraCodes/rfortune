@@ -45,7 +45,7 @@ Usage:  {0} init [path to database]
         } else {
             return Err("Not enough arguments for command add.".into());
         }
-        quote = Some((args[3].clone(), args[4].clone(), source));
+        quote = Some(Quote::new(args[3].clone(), args[4].clone(), source));
     } else {
         quote = None;
     }
