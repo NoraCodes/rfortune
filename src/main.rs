@@ -3,6 +3,7 @@
 #![plugin(rocket_codegen)]
 
 extern crate rocket;
+extern crate rocket_contrib;
 extern crate rand;
 extern crate rusqlite;
 

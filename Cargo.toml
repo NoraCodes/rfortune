@@ -4,8 +4,8 @@ version = "0.1.0"
 authors = ["SilverWingedSeraph <lfstindall@gmail.com>"]
 
 [dependencies]
-rocket = "0.1.3"
-rocket_codegen = "0.1.3"
+rocket = "0.1.4"
+rocket_codegen = "0.1.4"
 
 rand = "*"
 rusqlite = "0.8.0"
@@ -13,3 +13,8 @@ rusqlite = "0.8.0"
 serde = "0.8"
 serde_derive = "0.8"
 serde_json = "0.8"
+
+[dependencies.rocket_contrib]
+version = "0.1.4"
+default_features = false
+features = ["tera_templates"]
