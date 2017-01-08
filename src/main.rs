@@ -50,7 +50,8 @@ fn fake_main() -> i32 {
         }
         Mode::Execute => {
             rocket::ignite().mount("/",
-            routes![routes::index_html, routes::json, routes::json_all, routes::json_add]).launch();
+            routes![routes::index_html, routes::all,
+                    routes::json, routes::json_all, routes::json_add]).launch();
         }
         Mode::List => {
             let maybe_quotes = database::get_quotes(&mut db_connection);

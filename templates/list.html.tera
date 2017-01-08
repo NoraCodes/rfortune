@@ -1,0 +1,9 @@
+{% extends "layout.html.tera" %}
+{% block content %}
+{% for quote in quotes %}
+<div class='quote-container'>
+  <blockquote>{{quote.quote}}</blockquote>
+  <br /> <strong>{{quote.author}}</strong> ({{quote.source_text}})
+</div>
+{% endfor %}
+{% endblock content %}

@@ -22,12 +22,36 @@ impl QuoteTemplateContext {
     }
 }
 
+#[derive(Serialize)]
+struct QuoteListTemplateContext {
+    quotes: Vec<QuoteTemplateContext>
+}
+
+impl QuoteListTemplateContext {
+    fn new(quotes: Vec<QuoteTemplateContext>) -> QuoteListTemplateContext {
+        QuoteListTemplateContext {
+            quotes: quotes
+        }
+    }
+}
+
 #[get("/")]
 pub fn index_html() -> Template {
     let quote = quotes::get_random_quote().unwrap();
     let source_text = quote.get_source_as_text();
     let context = QuoteTemplateContext::new(quote.quote, quote.author, source_text);
     Template::render("index", &context)
+}
+
+#[get("/all")]
+pub fn all() -> Template {
+    let quotes = quotes::get_quotes().unwrap();
+    let mut contexts = Vec::with_capacity(quotes.len());
+    for quote in quotes {
+        let source_text = quote.get_source_as_text();
+        contexts.push(QuoteTemplateContext::new(quote.quote, quote.author, source_text));
+    }
+    Template::render("list", &QuoteListTemplateContext::new(contexts))
 }
 
 #[get("/json")]
