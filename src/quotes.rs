@@ -52,6 +52,17 @@ pub fn get_quotes() -> Option<Vec<Quote>> {
     }
 }
 
+pub fn add_quote(quote: &Quote) -> Option<()> {
+    let mut connection = match get_db_connection_from_config() {
+        Some(c) => c,
+        None => {return None;}
+    };
+    match database::add_quote(&mut connection, &quote) {
+        Ok(_) => Some(()),
+        Err(_) => None
+    }
+}
+
 fn get_db_connection_from_config() -> Option<rusqlite::Connection> {
     let current_config = match config::active() {
         Some(c) => c,

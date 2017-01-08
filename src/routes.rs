@@ -1,7 +1,9 @@
 use rocket::response::content::{JSON};
+use rocket_contrib;
 use rocket_contrib::Template;
 use serde_json;
 use quotes;
+use quotes::Quote;
 
 #[derive(Serialize)]
 struct QuoteTemplateContext {
@@ -38,4 +40,12 @@ pub fn json() -> JSON<String> {
 pub fn json_all() -> JSON<String> {
     let quotes = quotes::get_quotes().unwrap();
     JSON(serde_json::to_string(&quotes).unwrap())
+}
+
+#[post("/json/add", format="application/json", data="<quote>")]
+pub fn json_add(quote: rocket_contrib::JSON<Quote>) -> JSON<String> {
+    match quotes::add_quote(&quote.0) {
+        Some(_) => JSON(serde_json::to_string(&true).unwrap()),
+        None => JSON(serde_json::to_string(&false).unwrap())
+    }
 }

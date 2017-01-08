@@ -17,4 +17,4 @@ serde_json = "0.8"
 [dependencies.rocket_contrib]
 version = "0.1.4"
 default_features = false
-features = ["tera_templates"]
+features = ["tera_templates", "json"]
