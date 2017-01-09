@@ -1,6 +1,7 @@
 <html>
   <head>
     <title> Rocket Fortune </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style type='text/css'>
       body {
           background-color: black;
@@ -39,12 +40,13 @@
           background-color: #333;
       }
       .main-container {
-          margin-left: 25%;
-          margin-right: 25%;
-          margin-top: 20px;
+          margin-left: auto;
+          margin-right: auto;
+          margin-top: 20pt;
           padding: 10px;
           border-radius: 2px;
-          min-width: 200px;
+          width: 500px;
+          max-width: 90%;
           background-color: #111;
       }
       .message {

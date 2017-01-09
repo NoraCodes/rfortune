@@ -13,8 +13,10 @@ What this application demonstrates:
 - [x] Templates with `tera`
 - [x] JSON API with `serde` and the `rocket_contrib` JSON support
 - [x] Integrated command line management
-- [] Form data entry
-- [] Rocket tests
+- [x] Form data entry
+- [x] Responsive, mobile-first design
+- [ ] Custom error pages
+- [ ] Rocket tests
 
 ## Why
 I like Rocket, as a concept. It allows me to use Rust, a language that tends to
