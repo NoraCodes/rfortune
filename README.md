@@ -15,7 +15,7 @@ What this application demonstrates:
 - [x] Integrated command line management
 - [x] Form data entry
 - [x] Responsive, mobile-first design
-- [ ] Custom error pages
+- [x] Custom error pages
 - [ ] Rocket tests
 
 ## Why

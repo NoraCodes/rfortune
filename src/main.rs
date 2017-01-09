@@ -51,7 +51,9 @@ fn fake_main() -> i32 {
         Mode::Execute => {
             rocket::ignite().mount("/",
             routes![routes::index_html, routes::all, routes::add_form, routes::add,
-                    routes::json, routes::json_all, routes::json_add]).launch();
+                    routes::json, routes::json_all, routes::json_add])
+                    .catch(errors![routes::error_404])
+                    .launch();
         }
         Mode::List => {
             let maybe_quotes = database::get_quotes(&mut db_connection);

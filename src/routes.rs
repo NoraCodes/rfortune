@@ -37,7 +37,7 @@ impl QuoteListTemplateContext {
 }
 
 #[derive(Serialize)]
-struct AddFormContext {
+struct MessageContext {
     message: String
 }
 
@@ -62,25 +62,30 @@ pub fn all() -> Template {
 
 #[get("/add")]
 pub fn add_form() -> Template {
-    Template::render("add", &AddFormContext{message:"".into()})
+    Template::render("add", &MessageContext{message:"".into()})
 }
 
 #[post("/add", data="<quote_data>")]
 pub fn add(quote_data: Form<Quote>) -> Template {
     let mut quote: Quote = quote_data.get().clone();
     if quote.quote == "" {
-        return Template::render("add", &AddFormContext{message:"Quote must have text.".into()});
+        return Template::render("add", &MessageContext{message:"Quote must have text.".into()});
     }
     if quote.author == "" {
-        return Template::render("add", &AddFormContext{message:"Quote must have an author.".into()});
+        return Template::render("add", &MessageContext{message:"Quote must have an author.".into()});
     }
     if quote.source == Some("".into()) {
         quote.source = None;
     }
     match quotes::add_quote(&quote) {
-        Some(_) => Template::render("add", &AddFormContext{message:"Successfully added quote.".into()}),
-        None => Template::render("add", &AddFormContext{message:"Failed to add quote.".into()})
+        Some(_) => Template::render("add", &MessageContext{message:"Successfully added quote.".into()}),
+        None => Template::render("add", &MessageContext{message:"Failed to add quote.".into()})
     }
+}
+
+#[error(404)]
+pub fn error_404() -> Template {
+    Template::render("404", &MessageContext{message:"".into()})
 }
 
 #[get("/json")]
