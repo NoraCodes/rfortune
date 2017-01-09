@@ -60,15 +60,16 @@
   </head>
   <body>
     <div class='main-container'>
-      <h1>Rocket Fortune</h1>
-      <h3>A simple fortune application, built with Rocket.</h3>
+      <a href="/"><h1>Rocket Fortune</h1></a>
       {% block content %} {% endblock content %}
       <br />
       <div class='bottomnav'>
         <a href='http://rocket.rs'>Rocket</a> |
         <a href='http://silverwingedseraph.net'>My Blog</a> |
         <a href='http://twitter.com/leotindall'>My Twitter</a> |
-        <a href='/json'> JSON version </a>
+        <a href='/api'>JSON API</a> |
+        <a href='/all'>All Quotes</a> |
+        <a href='/add'>Submit </a>
       </div>
     </div>
   </body>
