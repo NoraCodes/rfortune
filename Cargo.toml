@@ -1,13 +1,13 @@
 [package]
 name = "rocket_fortune"
-version = "0.1.0"
+version = "0.5.0"
 authors = ["SilverWingedSeraph <lfstindall@gmail.com>"]
 
 [dependencies]
 rocket = "0.1.4"
 rocket_codegen = "0.1.4"
 
-rand = "*"
+rand = "0.3.15"
 rusqlite = "0.8.0"
 
 serde = "0.8"
