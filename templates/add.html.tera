@@ -1,0 +1,22 @@
+{% extends "layout.html.tera" %}
+{% block content %}
+{% if message != "" %}
+<div class="message">
+  {{message}}
+</div>
+{% endif %}
+<form id="form" action="/add" method="POST">
+  Quote:<br />
+  <textarea form="form" name="quote" rows="12" cols="40">
+Put your brilliant prose here -- or, no, put someone else's.
+  </textarea>
+  <br />
+  Author:
+  <input type="text" name="author" />
+  <br />
+  Source:
+  <input type="text" name="source" />
+  <br />
+  <button type="submit">Submit</button>
+</form>
+{% endblock content %}

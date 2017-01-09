@@ -47,6 +47,13 @@
           min-width: 200px;
           background-color: #111;
       }
+      .message {
+        background-color: #777;
+        color: black;
+        margin: 2px;
+        padding: 2px;
+        border-radius: 1px;
+      }
     </style>
   </head>
   <body>

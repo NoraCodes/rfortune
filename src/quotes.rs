@@ -4,7 +4,7 @@ use database;
 use rocket::config;
 use rusqlite;
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, FromForm)]
 pub struct Quote {
     pub quote: String,
     pub author: String,

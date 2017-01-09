@@ -1,4 +1,5 @@
 use rocket::response::content::{JSON};
+use rocket::request::Form;
 use rocket_contrib;
 use rocket_contrib::Template;
 use serde_json;
@@ -35,6 +36,11 @@ impl QuoteListTemplateContext {
     }
 }
 
+#[derive(Serialize)]
+struct AddFormContext {
+    message: String
+}
+
 #[get("/")]
 pub fn index_html() -> Template {
     let quote = quotes::get_random_quote().unwrap();
@@ -52,6 +58,29 @@ pub fn all() -> Template {
         contexts.push(QuoteTemplateContext::new(quote.quote, quote.author, source_text));
     }
     Template::render("list", &QuoteListTemplateContext::new(contexts))
+}
+
+#[get("/add")]
+pub fn add_form() -> Template {
+    Template::render("add", &AddFormContext{message:"".into()})
+}
+
+#[post("/add", data="<quote_data>")]
+pub fn add(quote_data: Form<Quote>) -> Template {
+    let mut quote: Quote = quote_data.get().clone();
+    if quote.quote == "" {
+        return Template::render("add", &AddFormContext{message:"Quote must have text.".into()});
+    }
+    if quote.author == "" {
+        return Template::render("add", &AddFormContext{message:"Quote must have an author.".into()});
+    }
+    if quote.source == Some("".into()) {
+        quote.source = None;
+    }
+    match quotes::add_quote(&quote) {
+        Some(_) => Template::render("add", &AddFormContext{message:"Successfully added quote.".into()}),
+        None => Template::render("add", &AddFormContext{message:"Failed to add quote.".into()})
+    }
 }
 
 #[get("/json")]
