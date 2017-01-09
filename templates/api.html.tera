@@ -1,0 +1,34 @@
+{% extends "layout.html.tera" %}
+{% block content %}
+<h3>API Organization</h3>
+<p>
+  This service, in addition to the human-readable frontend, has an API which
+  exposes 3 endpoints:
+  <ul>
+    <li><a href="/json">GET /json</a>, which returns a JSON object representing a random quote</li>
+    <li><a href="/json/all">GET /json/all</a>, which returns a list of JSON objects representing all known quotes</li>
+    <li>POST /json/add, which accepts a JSON object representing a single quote and adds it to the database</li>
+  </ul>
+</p>
+
+<h3>JSON Representations</h3>
+<p>
+  The JSON representation of a quote is very straightforward. It contains three
+  keys:
+  <ul>
+    <li>"quote", which contains the text of the quote</li>
+    <li>"author", which contains text representing the author to whom the quote is attributed</li>
+    <li>"source", which contains either text representing a citation, like a URI or book title, or null</li>
+  </ul>
+</p>
+
+<h3>Sample curl Commands</h3>
+<p>
+  <code>curl</code> is a convenient tool for interacting with APIs. This command
+  would add a quote to the database, for instance:
+  <br />
+  <blockquote>
+    curl -i -X POST -H 'Content-Type: application/json' -d '{"quote":"A Quote with a Source", "author":"Author M. Name", "source":"ISBN: 31337000000"}' http://localhost:8000/json/add
+  </blockquote>
+</p>
+{% endblock content %}

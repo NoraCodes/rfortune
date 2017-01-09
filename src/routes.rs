@@ -83,6 +83,11 @@ pub fn add(quote_data: Form<Quote>) -> Template {
     }
 }
 
+#[get("/api")]
+pub fn api_html() -> Template {
+    Template::render("api", &MessageContext{message:"".into()})
+}
+
 #[error(404)]
 pub fn error_404() -> Template {
     Template::render("404", &MessageContext{message:"".into()})
