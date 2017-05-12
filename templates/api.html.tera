@@ -1,4 +1,4 @@
-{% extends "layout.html.tera" %}
+{% extends "layout" %}
 {% block content %}
 <h3>API Organization</h3>
 <p>

@@ -1,4 +1,4 @@
-{% extends "layout.html.tera" %}
+{% extends "layout" %}
 {% block content %}
 <h1>4 0 4</h1>
 <h3> This page does not exist. </h3>

@@ -1,4 +1,4 @@
-{% extends "layout.html.tera" %}
+{% extends "layout" %}
 {% block content %}
 <h3>A simple fortune application, built with Rocket.</h3>
 <div class='quote-container'>

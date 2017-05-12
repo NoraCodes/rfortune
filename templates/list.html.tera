@@ -1,4 +1,4 @@
-{% extends "layout.html.tera" %}
+{% extends "layout" %}
 {% block content %}
 {% for quote in quotes %}
 <div class='quote-container'>
