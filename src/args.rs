@@ -22,18 +22,18 @@ Usage:  {0} init [path to database]
         {0} add [path to database] quote author [source]", args[0]));
     }
 
+    match args[1].as_str() {
+        "init" | "initialize" => {mode = Mode::Initialize;}
+        "exec" | "execute" => {return Ok((Mode::Execute, "".into(), None));}
+        "list" => {mode = Mode::List;}
+        "add" => {mode = Mode::Add}
+        &_ => {return Err("First argument must be init(ialize), exec(ute), or list.".into());}
+    };
+
     if args.len() < 3 {
         return Err("No database path given; can't perform database operations.".into());
     } else {
         database_path = String::from(args[2].clone());
-    };
-
-    match args[1].as_str() {
-        "init" | "initialize" => {mode = Mode::Initialize;}
-        "exec" | "execute" => {mode = Mode::Execute;}
-        "list" => {mode = Mode::List;}
-        "add" => {mode = Mode::Add}
-        &_ => {return Err("First argument must be init(ialize), exec(ute), or list.".into());}
     };
 
     if mode == Mode::Add {
