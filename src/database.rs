@@ -18,13 +18,7 @@ const SQL_QUERY_ALL_QUOTES: &'static str =
 " SELECT * FROM quotes ";
 
 pub fn get_database_connection(location: String) -> Result<Connection, Error> {
-    let connection: Connection;
-    if location == ":memory:" {
-        connection = Connection::open_in_memory()?;
-    } else {
-        connection = Connection::open(location)?;
-    }
-    return Ok(connection);
+    Connection::open(location)
 }
 
 pub fn initialize(connection: &mut Connection) -> Result<(), Error> {

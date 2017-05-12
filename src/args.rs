@@ -23,7 +23,7 @@ Usage:  {0} init [path to database]
     }
 
     if args.len() < 3 {
-        database_path = ":memory:".into();
+        return Err("No database path given; can't perform database operations.".into());
     } else {
         database_path = String::from(args[2].clone());
     };
