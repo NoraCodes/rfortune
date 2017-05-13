@@ -10,7 +10,6 @@ rocket_codegen = "^0.2"
 rand = "^0.3"
 rusqlite = "^0.11"
 
-
 serde = "^0.9"
 serde_derive = "^0.9"
 serde_json = "^0.9"
