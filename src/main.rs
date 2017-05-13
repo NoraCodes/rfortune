@@ -24,7 +24,7 @@ fn main() {
 
 fn fake_main() -> i32 {
     let given_arguments: Vec<_> = std::env::args().collect();
-    let parsing_results = match args::parse_args(given_arguments) {
+    let parsing_results = match args::parse_args(&given_arguments) {
         Ok(v) => v,
         Err(s) => {println!("{}", s); return 1;}
     };

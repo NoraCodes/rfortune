@@ -8,7 +8,7 @@ pub enum Mode {
     Add
 }
 
-pub fn parse_args(args: Vec<String>) -> Result<(Mode, String, Option<Quote>), String>
+pub fn parse_args(args: &[String]) -> Result<(Mode, String, Option<Quote>), String>
 {
     let mode: Mode;
     let database_path: String;
