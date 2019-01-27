@@ -15,3 +15,4 @@ address = "0.0.0.0"
 port = 80
 db_path = "prod.db"
 session_key = "Xu2sLzKhBOxj3TXlFcZooLeooQMp5V0m"
+

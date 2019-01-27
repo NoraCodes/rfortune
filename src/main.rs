@@ -1,9 +1,6 @@
-#![feature(plugin)]
-#![feature(custom_derive)]
-#![plugin(rocket_codegen)]
-
-extern crate rocket;
-extern crate rocket_contrib;
+#![feature(proc_macro_hygiene, decl_macro)]
+#[macro_use] extern crate rocket;
+#[macro_use] extern crate rocket_contrib;
 extern crate rand;
 extern crate rusqlite;
 
@@ -14,6 +11,15 @@ mod quotes;
 mod routes;
 mod args;
 mod database;
+
+#[database("sqlite")]
+pub struct SqliteDb(rusqlite::Connection);
+
+impl SqliteDb {
+    pub fn connection(&mut self) -> &mut rusqlite::Connection { 
+        &mut self.0
+    }
+}
 
 use args::Mode;
 
@@ -45,11 +51,12 @@ fn fake_main() -> i32 {
             println!("Initialized SQLite Database.");
         }
         Mode::Execute => {
-            rocket::ignite().mount("/",
-            routes![routes::index_html, routes::all, routes::add_form, routes::add, routes::api_html,
-                    routes::json, routes::json_all, routes::json_add])
-                    .catch(errors![routes::error_404])
-                    .launch();
+            rocket::ignite()
+                .mount("/", routes![routes::index_html, routes::all, routes::add_form,
+                       routes::add, routes::api_html, routes::json, routes::json_all, routes::json_add])
+                .register(catchers![routes::error_404])
+                .attach(SqliteDb::fairing())
+                .launch();
         }
         Mode::List => {
             let maybe_quotes = database::get_quotes(&mut db_connection);

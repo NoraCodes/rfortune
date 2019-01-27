@@ -1,10 +1,10 @@
-use rocket::response::content::{JSON};
 use rocket::request::Form;
-use rocket_contrib;
-use rocket_contrib::Template;
+use rocket_contrib::templates::Template;
+use rocket_contrib::json::Json as Json;
 use serde_json;
 use quotes;
 use quotes::Quote;
+use super::SqliteDb;
 
 #[derive(Serialize)]
 struct QuoteTemplateContext {
@@ -42,16 +42,16 @@ struct MessageContext {
 }
 
 #[get("/")]
-pub fn index_html() -> Template {
-    let quote = quotes::get_random_quote().unwrap();
+pub fn index_html(mut db: SqliteDb) -> Template {
+    let quote = quotes::get_random_quote(db.connection()).unwrap();
     let source_text = quote.get_source_as_text();
     let context = QuoteTemplateContext::new(quote.quote, quote.author, source_text);
     Template::render("index", &context)
 }
 
 #[get("/all")]
-pub fn all() -> Template {
-    let quotes = quotes::get_quotes().unwrap();
+pub fn all(mut db: SqliteDb) -> Template {
+    let quotes = quotes::get_quotes(db.connection()).unwrap();
     let mut contexts = Vec::with_capacity(quotes.len());
     for quote in quotes {
         let source_text = quote.get_source_as_text();
@@ -66,8 +66,8 @@ pub fn add_form() -> Template {
 }
 
 #[post("/add", data="<quote_data>")]
-pub fn add(quote_data: Form<Quote>) -> Template {
-    let mut quote: Quote = quote_data.get().clone();
+pub fn add(quote_data: Form<Quote>, mut db: SqliteDb) -> Template {
+    let mut quote: Quote = quote_data.clone();
     if quote.quote == "" {
         return Template::render("add", &MessageContext{message:"Quote must have text.".into()});
     }
@@ -77,7 +77,7 @@ pub fn add(quote_data: Form<Quote>) -> Template {
     if quote.source == Some("".into()) {
         quote.source = None;
     }
-    match quotes::add_quote(&quote) {
+    match quotes::add_quote(&quote, db.connection()) {
         Some(_) => Template::render("add", &MessageContext{message:"Successfully added quote.".into()}),
         None => Template::render("add", &MessageContext{message:"Failed to add quote.".into()})
     }
@@ -88,27 +88,27 @@ pub fn api_html() -> Template {
     Template::render("api", &MessageContext{message:"".into()})
 }
 
-#[error(404)]
+#[catch(404)]
 pub fn error_404() -> Template {
     Template::render("404", &MessageContext{message:"".into()})
 }
 
 #[get("/json")]
-pub fn json() -> JSON<String> {
-    let quote = quotes::get_random_quote().unwrap();
-    JSON(serde_json::to_string(&quote).unwrap())
+pub fn json(mut db: SqliteDb) -> Json<String> {
+    let quote = quotes::get_random_quote(db.connection()).unwrap();
+    Json(serde_json::to_string(&quote).unwrap())
 }
 
 #[get("/json/all")]
-pub fn json_all() -> JSON<String> {
-    let quotes = quotes::get_quotes().unwrap();
-    JSON(serde_json::to_string(&quotes).unwrap())
+pub fn json_all(mut db: SqliteDb) -> Json<String> {
+    let quotes = quotes::get_quotes(db.connection()).unwrap();
+    Json(serde_json::to_string(&quotes).unwrap())
 }
 
 #[post("/json/add", format="application/json", data="<quote>")]
-pub fn json_add(quote: rocket_contrib::JSON<Quote>) -> JSON<String> {
-    match quotes::add_quote(&quote.0) {
-        Some(_) => JSON(serde_json::to_string(&true).unwrap()),
-        None => JSON(serde_json::to_string(&false).unwrap())
+pub fn json_add(quote: Json<Quote>, mut db: SqliteDb) -> Json<bool> {
+    match quotes::add_quote(&quote.0, db.connection()) {
+        Some(_) => Json(true),
+        None => Json(false)
     }
 }

@@ -1,6 +1,15 @@
 use rusqlite::{Connection, Error};
 use quotes::Quote;
 
+macro_rules! to_sql {
+    () => {
+        $crate::NO_PARAMS
+    };
+    ($($param:expr),+ $(,)*) => {
+        &[$(&$param as &dyn rusqlite::types::ToSql),+]
+    };
+}
+
 // SQL to create the quotes table in the database
 const SQL_INIT_DATABASE: &'static str =
 " CREATE TABLE quotes (
@@ -27,7 +36,8 @@ pub fn initialize(connection: &mut Connection) -> Result<(), Error> {
 }
 
 pub fn add_quote(connection: &mut Connection, quote: &Quote) -> Result<(), Error> {
-    connection.execute(SQL_INSERT_QUOTE, &[&quote.quote, &quote.author, &quote.source])?;
+    let mut statement = connection.prepare(SQL_INSERT_QUOTE)?;
+    statement.execute(to_sql![quote.quote, quote.author, quote.source])?;
     Ok(())
 }
 

@@ -1,8 +1,7 @@
 use rand;
 use database;
 
-use rocket::config;
-use rusqlite;
+use rusqlite::Connection;
 
 #[derive(Clone, Serialize, Deserialize, FromForm)]
 pub struct Quote {
@@ -27,13 +26,8 @@ impl Quote {
     }
 }
 
-pub fn get_random_quote() -> Option<Quote> {
-
-    let mut connection = match get_db_connection_from_config(){
-        Some(c) => c,
-        None => {return None;}
-    };
-    let quotes_list = match database::get_quotes(&mut connection) {
+pub fn get_random_quote(connection: &mut Connection) -> Option<Quote> {
+    let quotes_list = match database::get_quotes(connection) {
         Ok(q) => q,
         Err(_) => {return None;}
     };
@@ -41,39 +35,17 @@ pub fn get_random_quote() -> Option<Quote> {
     Some(quotes_list[random_number].clone())
 }
 
-pub fn get_quotes() -> Option<Vec<Quote>> {
-    let mut connection = match get_db_connection_from_config() {
-        Some(c) => c,
-        None => {return None;}
-    };
-    match database::get_quotes(&mut connection) {
+pub fn get_quotes(connection: &mut Connection) -> Option<Vec<Quote>> {
+    match database::get_quotes(connection) {
         Ok(q) => Some(q),
         Err(_) => None
     }
 }
 
-pub fn add_quote(quote: &Quote) -> Option<()> {
-    let mut connection = match get_db_connection_from_config() {
-        Some(c) => c,
-        None => {return None;}
-    };
-    match database::add_quote(&mut connection, &quote) {
+pub fn add_quote(quote: &Quote, connection: &mut Connection) -> Option<()> {
+    match database::add_quote(connection, quote) {
         Ok(_) => Some(()),
         Err(_) => None
     }
 }
 
-fn get_db_connection_from_config() -> Option<rusqlite::Connection> {
-    let current_config = match config::active() {
-        Some(c) => c,
-        None => {return None;}
-    };
-    let db_path: String = match current_config.get_str("db_path") {
-        Ok(v) => v.into(),
-        Err(_) => {return None;}
-    };
-    match database::get_database_connection(db_path) {
-        Ok(c) => Some(c),
-        Err(_) => None
-    }
-}
