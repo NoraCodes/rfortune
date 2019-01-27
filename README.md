@@ -1,7 +1,7 @@
 # rfortune
 A simple Rust `fortune`-like webapp with Rocket
 
-![A screenshot of rfortune in action](https://github.com/SilverWingedSeraph/rfortune/blob/master/screenshot.png)
+![A screenshot of rfortune in action](screenshot.png)
 
 ## What
 This simple webapp reads quotes from a SQLite database and picks a random one to return
@@ -16,6 +16,7 @@ What this application demonstrates:
 - [x] Form data entry
 - [x] Responsive, mobile-first design
 - [x] Custom error pages
+- [x] Rust 2018 compliance
 - [ ] Rocket tests
 
 ## Why
