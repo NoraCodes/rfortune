@@ -1,4 +1,4 @@
-use quotes::Quote;
+use crate::quotes::Quote;
 
 #[derive(PartialEq)]
 pub enum Mode {

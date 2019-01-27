@@ -1,5 +1,5 @@
 use rusqlite::{Connection, Error};
-use quotes::Quote;
+use crate::quotes::Quote;
 
 macro_rules! to_sql {
     () => {

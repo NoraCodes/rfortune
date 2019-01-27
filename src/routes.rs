@@ -2,9 +2,8 @@ use rocket::request::Form;
 use rocket_contrib::templates::Template;
 use rocket_contrib::json::Json as Json;
 use serde_json;
-use quotes;
-use quotes::Quote;
-use super::SqliteDb;
+use crate::quotes::{self, Quote};
+use crate::SqliteDb;
 
 #[derive(Serialize)]
 struct QuoteTemplateContext {
@@ -43,9 +42,13 @@ struct MessageContext {
 
 #[get("/")]
 pub fn index_html(mut db: SqliteDb) -> Template {
-    let quote = quotes::get_random_quote(db.connection()).unwrap();
-    let source_text = quote.get_source_as_text();
-    let context = QuoteTemplateContext::new(quote.quote, quote.author, source_text);
+    let context = match quotes::get_random_quote(db.connection()) {
+        Some(quote) => {
+            let source_text = quote.get_source_as_text();
+            QuoteTemplateContext::new(quote.quote, quote.author, source_text)
+        }
+        None => QuoteTemplateContext::new("There are no quotes in the database.".into(), "".into(), "".into())
+    };
     Template::render("index", &context)
 }
 

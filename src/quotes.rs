@@ -1,5 +1,5 @@
 use rand;
-use database;
+use crate::database;
 
 use rusqlite::Connection;
 
@@ -31,8 +31,12 @@ pub fn get_random_quote(connection: &mut Connection) -> Option<Quote> {
         Ok(q) => q,
         Err(_) => {return None;}
     };
-    let random_number = rand::random::<usize>() % quotes_list.len();
-    Some(quotes_list[random_number].clone())
+    if quotes_list.len() > 0 {
+        let random_number = rand::random::<usize>() % quotes_list.len();
+        Some(quotes_list[random_number].clone())
+    } else {
+        None
+    }
 }
 
 pub fn get_quotes(connection: &mut Connection) -> Option<Vec<Quote>> {

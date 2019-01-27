@@ -56,6 +56,7 @@ fn fake_main() -> i32 {
                        routes::add, routes::api_html, routes::json, routes::json_all, routes::json_add])
                 .register(catchers![routes::error_404])
                 .attach(SqliteDb::fairing())
+                .attach(rocket_contrib::templates::Template::fairing())
                 .launch();
         }
         Mode::List => {

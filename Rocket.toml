@@ -1,5 +1,5 @@
 [development]
-db_path = "dev.db"
+databases.sqlite = { url = "dev.db" }
 
 # NOTE: Do NOT !!! !!! use these keys; instead generate random keys
 # for example with
@@ -7,12 +7,12 @@ db_path = "dev.db"
 # and copy and paste here. Must be 24 bytes base64 encoded.
 
 [staging]
-db_path = "stage.db"
 session_key = "RAdUdcco7SwzbyWxd8UOkM5ekezIRjsO"
+databases.sqlite = { url = "stage.db" }
 
 [production]
 address = "0.0.0.0"
 port = 80
-db_path = "prod.db"
 session_key = "Xu2sLzKhBOxj3TXlFcZooLeooQMp5V0m"
+databases.sqlite = { url = "prod.db" }
 
