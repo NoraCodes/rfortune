@@ -35,5 +35,5 @@ You'll need to add quotes using either `cargo run add dev.db <quote> <author> [s
 or the JSON API.
 
 ## License
-This app is licensed under the Unlicense. Use it for whatever you want; if
-it breaks something it's not my fault.
+This software is subject to the terms of the GNU Affero General Public License v3.0.
+
