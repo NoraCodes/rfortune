@@ -1,6 +1,4 @@
-use rand;
 use crate::database;
-
 use rusqlite::Connection;
 
 #[derive(Clone, Serialize, Deserialize, FromForm)]
@@ -27,16 +25,10 @@ impl Quote {
 }
 
 pub fn get_random_quote(connection: &mut Connection) -> Option<Quote> {
-    let quotes_list = match database::get_quotes(connection) {
+    match database::get_random_quote(connection) {
         Ok(q) => q,
         Err(_) => {return None;}
-    };
-    if quotes_list.len() > 0 {
-        let random_number = rand::random::<usize>() % quotes_list.len();
-        Some(quotes_list[random_number].clone())
-    } else {
-        None
-    }
+    } 
 }
 
 pub fn get_quotes(connection: &mut Connection) -> Option<Vec<Quote>> {

@@ -26,6 +26,9 @@ const SQL_INSERT_QUOTE: &'static str =
 const SQL_QUERY_ALL_QUOTES: &'static str =
 " SELECT * FROM quotes ";
 
+const SQL_QUERY_RANDOM_QUOTE: &'static str = 
+" SELECT * FROM quotes WHERE id IN (SELECT id FROM quotes ORDER BY RANDOM() LIMIT 1) ";
+
 pub fn get_database_connection(location: String) -> Result<Connection, Error> {
     Connection::open(location)
 }
@@ -54,3 +57,15 @@ pub fn get_quotes(connection: &mut Connection) -> Result<Vec<Quote>, Error> {
 
     return Ok(quotes)
 }
+
+pub fn get_random_quote(connection: &mut Connection) -> Result<Option<Quote>, Error> {
+    let mut statement = connection.prepare(SQL_QUERY_RANDOM_QUOTE)?;
+    let maybe_quote = statement.query_map(&[], |row| {
+        Quote::new(row.get::<_, String>(1), row.get::<_, String>(2), row.get::<_, Option<String>>(3))
+    })?.next();
+    match maybe_quote {
+        None => Ok(None),
+        Some(r) => Ok(r.ok())
+    }
+}
+

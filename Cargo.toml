@@ -7,7 +7,6 @@ edition = "2018"
 [dependencies]
 rocket = "^0.4"
 
-rand = "0.6"
 rusqlite = "0.14" # Held back for compatibility with rocket_contrib databases
 
 serde = "1"
