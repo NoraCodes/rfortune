@@ -1,5 +1,5 @@
-use rusqlite::{Connection, Error};
 use crate::quotes::Quote;
+use rusqlite::{Connection, Error};
 
 macro_rules! to_sql {
     () => {
@@ -11,23 +11,20 @@ macro_rules! to_sql {
 }
 
 // SQL to create the quotes table in the database
-const SQL_INIT_DATABASE: &'static str =
-" CREATE TABLE quotes (
+const SQL_INIT_DATABASE: &'static str = " CREATE TABLE quotes (
     id          INTEGER PRIMARY KEY,
     quote       TEXT NOT NULL,
     author      VARCHAR(255),
     source      TEXT
 )";
 
-
 const SQL_INSERT_QUOTE: &'static str =
-" INSERT INTO quotes (quote, author, source) VALUES (?1, ?2, ?3)";
+    " INSERT INTO quotes (quote, author, source) VALUES (?1, ?2, ?3)";
 
-const SQL_QUERY_ALL_QUOTES: &'static str =
-" SELECT * FROM quotes ";
+const SQL_QUERY_ALL_QUOTES: &'static str = " SELECT * FROM quotes ";
 
-const SQL_QUERY_RANDOM_QUOTE: &'static str = 
-" SELECT * FROM quotes WHERE id IN (SELECT id FROM quotes ORDER BY RANDOM() LIMIT 1) ";
+const SQL_QUERY_RANDOM_QUOTE: &'static str =
+    " SELECT * FROM quotes WHERE id IN (SELECT id FROM quotes ORDER BY RANDOM() LIMIT 1) ";
 
 pub fn get_database_connection(location: String) -> Result<Connection, Error> {
     Connection::open(location)
@@ -47,7 +44,11 @@ pub fn add_quote(connection: &mut Connection, quote: &Quote) -> Result<(), Error
 pub fn get_quotes(connection: &mut Connection) -> Result<Vec<Quote>, Error> {
     let mut statement = connection.prepare(SQL_QUERY_ALL_QUOTES)?;
     let maybe_quotes_iter = statement.query_map(&[], |row| {
-        Quote::new(row.get::<_, String>(1), row.get::<_, String>(2), row.get::<_, Option<String>>(3))
+        Quote::new(
+            row.get::<_, String>(1),
+            row.get::<_, String>(2),
+            row.get::<_, Option<String>>(3),
+        )
     })?;
 
     let mut quotes = Vec::new();
@@ -55,17 +56,22 @@ pub fn get_quotes(connection: &mut Connection) -> Result<Vec<Quote>, Error> {
         quotes.push(quote.unwrap());
     }
 
-    return Ok(quotes)
+    return Ok(quotes);
 }
 
 pub fn get_random_quote(connection: &mut Connection) -> Result<Option<Quote>, Error> {
     let mut statement = connection.prepare(SQL_QUERY_RANDOM_QUOTE)?;
-    let maybe_quote = statement.query_map(&[], |row| {
-        Quote::new(row.get::<_, String>(1), row.get::<_, String>(2), row.get::<_, Option<String>>(3))
-    })?.next();
+    let maybe_quote = statement
+        .query_map(&[], |row| {
+            Quote::new(
+                row.get::<_, String>(1),
+                row.get::<_, String>(2),
+                row.get::<_, Option<String>>(3),
+            )
+        })?
+        .next();
     match maybe_quote {
         None => Ok(None),
-        Some(r) => Ok(r.ok())
+        Some(r) => Ok(r.ok()),
     }
 }
-

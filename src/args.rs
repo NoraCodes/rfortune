@@ -5,29 +5,39 @@ pub enum Mode {
     Execute,
     Initialize,
     List,
-    Add
+    Add,
 }
 
-pub fn parse_args(args: &[String]) -> Result<(Mode, String, Option<Quote>), String>
-{
+pub fn parse_args(args: &[String]) -> Result<(Mode, String, Option<Quote>), String> {
     let mode: Mode;
     let database_path: String;
     let quote: Option<Quote>;
 
     if args.len() < 2 {
-        return Err(format!("
+        return Err(format!(
+            "
 Usage:  {0} init [path to database]
         {0} list [path to database]
         {0} exec
-        {0} add [path to database] quote author [source]", args[0]));
+        {0} add [path to database] quote author [source]",
+            args[0]
+        ));
     }
 
     match args[1].as_str() {
-        "init" | "initialize" => {mode = Mode::Initialize;}
-        "exec" | "execute" => {return Ok((Mode::Execute, "".into(), None));}
-        "list" => {mode = Mode::List;}
-        "add" => {mode = Mode::Add}
-        &_ => {return Err("First argument must be init(ialize), exec(ute), or list.".into());}
+        "init" | "initialize" => {
+            mode = Mode::Initialize;
+        }
+        "exec" | "execute" => {
+            return Ok((Mode::Execute, "".into(), None));
+        }
+        "list" => {
+            mode = Mode::List;
+        }
+        "add" => mode = Mode::Add,
+        &_ => {
+            return Err("First argument must be init(ialize), exec(ute), or list.".into());
+        }
     };
 
     if args.len() < 3 {
@@ -49,7 +59,6 @@ Usage:  {0} init [path to database]
     } else {
         quote = None;
     }
-
 
     return Ok((mode, database_path, quote));
 }
