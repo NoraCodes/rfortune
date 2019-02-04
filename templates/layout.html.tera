@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style type='text/css'>
       body {
-          background-color: black;
-          color: green;
+          background-color: #EEE;
+          color: #121;
           font-family: monospace;
       }
       a:link {
@@ -13,15 +13,15 @@
           text-decoration: none;
       }
       a:visited {
-          color: green;
+          color: #121;
           text-decoration: none;
       }
       a:active {
-          color: green;
+          color: #121;
           text-decoration: underline;
       }
       a:hover {
-          color: green;
+          color: #121;
           text-decoration: underline;
       }
       h1 h2 h3 {
@@ -30,7 +30,6 @@
       blockquote {
           padding: 4px;
           border-radius: 2px;
-          color: white;
       }
       .quote-container {
           padding: 10px;
