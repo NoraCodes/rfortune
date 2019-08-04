@@ -2,6 +2,9 @@
   <head>
     <title> Rocket Fortune </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if base %}
+    <base href="{{ base }}" />
+    {% endif %}
     <style type='text/css'>
       body {
           background-color: #EEE;
@@ -13,7 +16,7 @@
           text-decoration: none;
       }
       a:visited {
-          color: #121;
+          color: green;
           text-decoration: none;
       }
       a:active {
@@ -54,15 +57,15 @@
   </head>
   <body>
     <div class='main-container'>
-      <a href="/"><h1>Rocket Fortune</h1></a>
+      <a href=""><h1>Rocket Fortune</h1></a>
       {% block content %} {% endblock content %}
       <br />
       <div class='bottomnav'>
         <a href='https://rocket.rs'>Rocket</a> |
         <a href='https://nora.codes'>My Blog</a> |
-        <a href='/api'>JSON API</a> |
-        <a href='/all'>All Quotes</a> |
-        <a href='/add'>Submit</a>
+        <a href='api'>JSON API</a> |
+        <a href='all'>All Quotes</a> |
+        <a href='add'>Submit</a>
       </div>
     </div>
   </body>

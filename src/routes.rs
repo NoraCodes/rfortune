@@ -1,23 +1,29 @@
 use crate::quotes::{self, Quote};
-use crate::SqliteDb;
+use crate::{BASE_URL, SqliteDb};
 use rocket::request::Form;
 use rocket_contrib::json::Json;
 use rocket_contrib::templates::Template;
 use serde_json;
+
+fn base_url() -> Option<String> {
+    BASE_URL.read().expect("BASE_URL poisoned").clone()
+}
 
 #[derive(Serialize)]
 struct QuoteTemplateContext {
     quote: String,
     author: String,
     source_text: String,
+    base: Option<String>,
 }
 
 impl QuoteTemplateContext {
-    fn new(quote: String, author: String, source_text: String) -> QuoteTemplateContext {
+    fn new(quote: String, author: String, source_text: String, base: Option<String>) -> QuoteTemplateContext {
         QuoteTemplateContext {
-            quote: quote,
-            author: author,
-            source_text: source_text,
+            quote,
+            author,
+            source_text,
+            base
         }
     }
 }
@@ -25,17 +31,19 @@ impl QuoteTemplateContext {
 #[derive(Serialize)]
 struct QuoteListTemplateContext {
     quotes: Vec<QuoteTemplateContext>,
+    base: Option<String>
 }
 
 impl QuoteListTemplateContext {
-    fn new(quotes: Vec<QuoteTemplateContext>) -> QuoteListTemplateContext {
-        QuoteListTemplateContext { quotes: quotes }
+    fn new(quotes: Vec<QuoteTemplateContext>, base: Option<String>) -> QuoteListTemplateContext {
+        QuoteListTemplateContext { quotes, base }
     }
 }
 
 #[derive(Serialize)]
 struct MessageContext {
     message: String,
+    base: Option<String>
 }
 
 #[get("/")]
@@ -43,12 +51,13 @@ pub fn index_html(mut db: SqliteDb) -> Template {
     let context = match quotes::get_random_quote(db.connection()) {
         Some(quote) => {
             let source_text = quote.get_source_as_text();
-            QuoteTemplateContext::new(quote.quote, quote.author, source_text)
+            QuoteTemplateContext::new(quote.quote, quote.author, source_text, base_url())
         }
         None => QuoteTemplateContext::new(
             "There are no quotes in the database.".into(),
-            "".into(),
-            "".into(),
+            "N/A".into(),
+            "N/A".into(),
+            base_url()
         ),
     };
     Template::render("index", &context)
@@ -64,14 +73,15 @@ pub fn all(mut db: SqliteDb) -> Template {
             quote.quote,
             quote.author,
             source_text,
+            None
         ));
     }
-    Template::render("list", &QuoteListTemplateContext::new(contexts))
+    Template::render("list", &QuoteListTemplateContext::new(contexts, base_url()))
 }
 
 #[get("/add")]
 pub fn add_form() -> Template {
-    Template::render("add", &MessageContext { message: "".into() })
+    Template::render("add", &MessageContext { message: "".into(), base: base_url()})
 }
 
 #[post("/add", data = "<quote_data>")]
@@ -81,6 +91,7 @@ pub fn add(quote_data: Form<Quote>, mut db: SqliteDb) -> Template {
         return Template::render(
             "add",
             &MessageContext {
+                base: base_url(),
                 message: "Quote must have text.".into(),
             },
         );
@@ -89,6 +100,7 @@ pub fn add(quote_data: Form<Quote>, mut db: SqliteDb) -> Template {
         return Template::render(
             "add",
             &MessageContext {
+                base: base_url(), 
                 message: "Quote must have an author.".into(),
             },
         );
@@ -100,12 +112,14 @@ pub fn add(quote_data: Form<Quote>, mut db: SqliteDb) -> Template {
         Some(_) => Template::render(
             "add",
             &MessageContext {
+                base: base_url(),
                 message: "Successfully added quote.".into(),
             },
         ),
         None => Template::render(
             "add",
             &MessageContext {
+                base: base_url(),
                 message: "Failed to add quote.".into(),
             },
         ),
@@ -114,12 +128,12 @@ pub fn add(quote_data: Form<Quote>, mut db: SqliteDb) -> Template {
 
 #[get("/api")]
 pub fn api_html() -> Template {
-    Template::render("api", &MessageContext { message: "".into() })
+    Template::render("api", &MessageContext { base: base_url(), message: "".into() })
 }
 
 #[catch(404)]
 pub fn error_404() -> Template {
-    Template::render("404", &MessageContext { message: "".into() })
+    Template::render("404", &MessageContext { base: base_url(), message: "".into() })
 }
 
 #[get("/json")]

@@ -9,10 +9,20 @@ extern crate rusqlite;
 extern crate serde_derive;
 extern crate serde_json;
 
+#[macro_use]
+extern crate lazy_static;
+
 mod args;
 mod database;
 mod quotes;
 mod routes;
+
+use std::sync::RwLock;
+use rocket::fairing::AdHoc;
+
+lazy_static! {
+    pub static ref BASE_URL: RwLock<Option<String>> = { RwLock::new(None) };
+}
 
 #[database("sqlite")]
 pub struct SqliteDb(rusqlite::Connection);
@@ -73,7 +83,14 @@ fn fake_main() -> i32 {
                 .register(catchers![routes::error_404])
                 .attach(SqliteDb::fairing())
                 .attach(rocket_contrib::templates::Template::fairing())
-                .launch();
+                .attach(AdHoc::on_attach("Base URL", |rocket| {
+                    println!("Adding baseurl managed state from config...");
+                    let base_url_config = rocket.config().get_str("base_url");
+                    let mut handle = BASE_URL.write().expect("BASE_URL poisoned");
+                    *handle = base_url_config.ok().map(|s| s.to_owned());
+                    Ok(rocket)
+                }))
+            .launch();
         }
         Mode::List => {
             let maybe_quotes = database::get_quotes(&mut db_connection);

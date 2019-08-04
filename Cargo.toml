@@ -13,6 +13,8 @@ serde = "1"
 serde_derive = "1"
 serde_json = "1"
 
+lazy_static = "1"
+
 [dependencies.rocket_contrib]
 version = "^0.4"
 default_features = false

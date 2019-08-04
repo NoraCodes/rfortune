@@ -5,8 +5,8 @@
   This service, in addition to the human-readable frontend, has an API which
   exposes 3 endpoints:
   <ul>
-    <li><a href="/json">GET /json</a>, which returns a JSON object representing a random quote</li>
-    <li><a href="/json/all">GET /json/all</a>, which returns a list of JSON objects representing all known quotes</li>
+    <li><a href="./json">GET /json</a>, which returns a JSON object representing a random quote</li>
+    <li><a href="./json/all">GET /json/all</a>, which returns a list of JSON objects representing all known quotes</li>
     <li>POST /json/add, which accepts a JSON object representing a single quote and adds it to the database</li>
   </ul>
 </p>

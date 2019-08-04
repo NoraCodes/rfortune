@@ -3,16 +3,19 @@ databases.sqlite = { url = "dev.db" }
 
 # NOTE: Do NOT !!! !!! use these keys; instead generate random keys
 # for example with
-# dd if=/dev/urandom bs=24 count=1 | base64 >> key.b64
-# and copy and paste here. Must be 24 bytes base64 encoded.
+# dd if=/dev/urandom bs=32 count=1 | base64
+# and copy and paste here. Must be 32 bytes, base64 encoded.
 
 [staging]
-session_key = "RAdUdcco7SwzbyWxd8UOkM5ekezIRjsO"
+secret_key = "PWeJtRywvgstfLa0DPdhI/zR7nGI8gT+6otIEmH+5v0="
 databases.sqlite = { url = "stage.db" }
 
 [production]
 address = "0.0.0.0"
-port = 80
-session_key = "Xu2sLzKhBOxj3TXlFcZooLeooQMp5V0m"
+port = 8080
+secret_key = "PWeJtRywvgstfLa0DPdhI/zR7nGI8gT+6otIEmH+5v0="
 databases.sqlite = { url = "prod.db" }
+
+# Set this to use a subdomain or other base URL
+# base_url = "https://nora.codes/quotes/"
 
