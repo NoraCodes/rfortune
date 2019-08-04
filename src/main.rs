@@ -17,8 +17,8 @@ mod database;
 mod quotes;
 mod routes;
 
-use std::sync::RwLock;
 use rocket::fairing::AdHoc;
+use std::sync::RwLock;
 
 lazy_static! {
     pub static ref BASE_URL: RwLock<Option<String>> = { RwLock::new(None) };
@@ -90,7 +90,7 @@ fn fake_main() -> i32 {
                     *handle = base_url_config.ok().map(|s| s.to_owned());
                     Ok(rocket)
                 }))
-            .launch();
+                .launch();
         }
         Mode::List => {
             let maybe_quotes = database::get_quotes(&mut db_connection);

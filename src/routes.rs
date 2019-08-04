@@ -1,5 +1,5 @@
 use crate::quotes::{self, Quote};
-use crate::{BASE_URL, SqliteDb};
+use crate::{SqliteDb, BASE_URL};
 use rocket::request::Form;
 use rocket_contrib::json::Json;
 use rocket_contrib::templates::Template;
@@ -18,12 +18,17 @@ struct QuoteTemplateContext {
 }
 
 impl QuoteTemplateContext {
-    fn new(quote: String, author: String, source_text: String, base: Option<String>) -> QuoteTemplateContext {
+    fn new(
+        quote: String,
+        author: String,
+        source_text: String,
+        base: Option<String>,
+    ) -> QuoteTemplateContext {
         QuoteTemplateContext {
             quote,
             author,
             source_text,
-            base
+            base,
         }
     }
 }
@@ -31,7 +36,7 @@ impl QuoteTemplateContext {
 #[derive(Serialize)]
 struct QuoteListTemplateContext {
     quotes: Vec<QuoteTemplateContext>,
-    base: Option<String>
+    base: Option<String>,
 }
 
 impl QuoteListTemplateContext {
@@ -43,7 +48,7 @@ impl QuoteListTemplateContext {
 #[derive(Serialize)]
 struct MessageContext {
     message: String,
-    base: Option<String>
+    base: Option<String>,
 }
 
 #[get("/")]
@@ -57,7 +62,7 @@ pub fn index_html(mut db: SqliteDb) -> Template {
             "There are no quotes in the database.".into(),
             "N/A".into(),
             "N/A".into(),
-            base_url()
+            base_url(),
         ),
     };
     Template::render("index", &context)
@@ -73,7 +78,7 @@ pub fn all(mut db: SqliteDb) -> Template {
             quote.quote,
             quote.author,
             source_text,
-            None
+            None,
         ));
     }
     Template::render("list", &QuoteListTemplateContext::new(contexts, base_url()))
@@ -81,7 +86,13 @@ pub fn all(mut db: SqliteDb) -> Template {
 
 #[get("/add")]
 pub fn add_form() -> Template {
-    Template::render("add", &MessageContext { message: "".into(), base: base_url()})
+    Template::render(
+        "add",
+        &MessageContext {
+            message: "".into(),
+            base: base_url(),
+        },
+    )
 }
 
 #[post("/add", data = "<quote_data>")]
@@ -100,7 +111,7 @@ pub fn add(quote_data: Form<Quote>, mut db: SqliteDb) -> Template {
         return Template::render(
             "add",
             &MessageContext {
-                base: base_url(), 
+                base: base_url(),
                 message: "Quote must have an author.".into(),
             },
         );
@@ -128,12 +139,24 @@ pub fn add(quote_data: Form<Quote>, mut db: SqliteDb) -> Template {
 
 #[get("/api")]
 pub fn api_html() -> Template {
-    Template::render("api", &MessageContext { base: base_url(), message: "".into() })
+    Template::render(
+        "api",
+        &MessageContext {
+            base: base_url(),
+            message: "".into(),
+        },
+    )
 }
 
 #[catch(404)]
 pub fn error_404() -> Template {
-    Template::render("404", &MessageContext { base: base_url(), message: "".into() })
+    Template::render(
+        "404",
+        &MessageContext {
+            base: base_url(),
+            message: "".into(),
+        },
+    )
 }
 
 #[get("/json")]
