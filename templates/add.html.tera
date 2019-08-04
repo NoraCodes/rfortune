@@ -5,7 +5,7 @@
   {{message}}
 </div>
 {% endif %}
-<form id="form" action="#" method="POST">
+<form id="form" action="add" method="POST">
   Quote:<br />
   <textarea form="form" name="quote" rows="12" cols="40">
 Put your brilliant prose here -- or, no, put someone else's.
