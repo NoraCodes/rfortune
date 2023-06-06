@@ -21,7 +21,8 @@ use rocket::fairing::AdHoc;
 use std::sync::RwLock;
 
 lazy_static! {
-    pub static ref BASE_URL: RwLock<Option<String>> = { RwLock::new(None) };
+    pub static ref BASE_URL: RwLock<Option<String>> = RwLock::new(None);
+    pub static ref CSS_URL: RwLock<Option<String>> = RwLock::new(None);
 }
 
 #[database("sqlite")]
@@ -86,8 +87,15 @@ fn fake_main() -> i32 {
                 .attach(AdHoc::on_attach("Base URL", |rocket| {
                     println!("Adding baseurl managed state from config...");
                     let base_url_config = rocket.config().get_str("base_url");
-                    let mut handle = BASE_URL.write().expect("BASE_URL poisoned");
-                    *handle = base_url_config.ok().map(|s| s.to_owned());
+                    let css_url_config = rocket.config().get_str("css_url");
+                    {
+                        let mut base_handle = BASE_URL.write().expect("BASE_URL poisoned");
+                        *base_handle = base_url_config.ok().map(|s| s.to_owned());
+                    }
+                    {
+                        let mut css_handle = CSS_URL.write().expect("CSS_URL poisoned");
+                        *css_handle = css_url_config.ok().map(|s| s.to_owned());
+                    }
                     Ok(rocket)
                 }))
                 .launch();

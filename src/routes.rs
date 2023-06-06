@@ -1,5 +1,5 @@
 use crate::quotes::{self, Quote};
-use crate::{SqliteDb, BASE_URL};
+use crate::{SqliteDb, BASE_URL, CSS_URL};
 use rocket::request::Form;
 use rocket_contrib::json::Json;
 use rocket_contrib::templates::Template;
@@ -9,26 +9,41 @@ fn base_url() -> Option<String> {
     BASE_URL.read().expect("BASE_URL poisoned").clone()
 }
 
+fn css_url() -> Option<String> {
+    CSS_URL.read().expect("CSS_URL poisoned").clone()
+}
+
+#[derive(Serialize)]
+struct CoreTemplateContext {
+    base: Option<String>,
+    css: Option<String>,
+}
+
+impl Default for CoreTemplateContext {
+    fn default() -> Self {
+        Self {
+            base: base_url(),
+            css: css_url(),
+        }
+    }
+}
+
 #[derive(Serialize)]
 struct QuoteTemplateContext {
     quote: String,
     author: String,
     source_text: String,
-    base: Option<String>,
+    #[serde(flatten)]
+    core: CoreTemplateContext,
 }
 
 impl QuoteTemplateContext {
-    fn new(
-        quote: String,
-        author: String,
-        source_text: String,
-        base: Option<String>,
-    ) -> QuoteTemplateContext {
+    fn new(quote: String, author: String, source_text: String) -> QuoteTemplateContext {
         QuoteTemplateContext {
             quote,
             author,
             source_text,
-            base,
+            core: Default::default(),
         }
     }
 }
@@ -36,12 +51,16 @@ impl QuoteTemplateContext {
 #[derive(Serialize)]
 struct QuoteListTemplateContext {
     quotes: Vec<QuoteTemplateContext>,
-    base: Option<String>,
+    #[serde(flatten)]
+    core: CoreTemplateContext,
 }
 
 impl QuoteListTemplateContext {
-    fn new(quotes: Vec<QuoteTemplateContext>, base: Option<String>) -> QuoteListTemplateContext {
-        QuoteListTemplateContext { quotes, base }
+    fn new(quotes: Vec<QuoteTemplateContext>) -> QuoteListTemplateContext {
+        QuoteListTemplateContext {
+            quotes,
+            core: Default::default(),
+        }
     }
 }
 
@@ -56,13 +75,12 @@ pub fn index_html(mut db: SqliteDb) -> Template {
     let context = match quotes::get_random_quote(db.connection()) {
         Some(quote) => {
             let source_text = quote.get_source_as_text();
-            QuoteTemplateContext::new(quote.quote, quote.author, source_text, base_url())
+            QuoteTemplateContext::new(quote.quote, quote.author, source_text)
         }
         None => QuoteTemplateContext::new(
             "There are no quotes in the database.".into(),
             "N/A".into(),
             "N/A".into(),
-            base_url(),
         ),
     };
     Template::render("index", &context)
@@ -78,10 +96,9 @@ pub fn all(mut db: SqliteDb) -> Template {
             quote.quote,
             quote.author,
             source_text,
-            None,
         ));
     }
-    Template::render("list", &QuoteListTemplateContext::new(contexts, base_url()))
+    Template::render("list", &QuoteListTemplateContext::new(contexts))
 }
 
 #[get("/add")]
