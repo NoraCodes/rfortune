@@ -2,7 +2,7 @@
 name = "rocket_fortune"
 version = "0.6.0"
 authors = ["Leonora Tindall <nora@nora.codes>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 rocket = "^0.4"
