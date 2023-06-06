@@ -3,8 +3,13 @@
     <title> Rocket Fortune </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% if base %}
-    <base href="{{ base }}" />
+    <base href="{{ base | safe }}" />
     {% endif %}
+    {% if css %}
+    {% for url in css -%}
+    <link rel="stylesheet" href="{{ url | safe }}"/>
+    {%- endfor %}
+    {% else %}
     <style type='text/css'>
       body {
           background-color: #EEE;
@@ -54,6 +59,7 @@
         border-radius: 1px;
       }
     </style>
+    {% endif %}
   </head>
   <body>
     <div class='main-container'>

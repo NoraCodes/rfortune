@@ -6,6 +6,8 @@ databases.sqlite = { url = "dev.db" }
 # dd if=/dev/urandom bs=32 count=1 | base64
 # and copy and paste here. Must be 32 bytes, base64 encoded.
 
+css_urls = [ "https://nora.codes/css/style.css", "https://nora.codes/css/fonts.css" ]
+
 [staging]
 secret_key = "PWeJtRywvgstfLa0DPdhI/zR7nGI8gT+6otIEmH+5v0="
 databases.sqlite = { url = "stage.db" }
@@ -18,4 +20,7 @@ databases.sqlite = { url = "prod.db" }
 
 # Set this to use a subdomain or other base URL
 # base_url = "https://nora.codes/quotes/"
+
+# Set this to use stylesheets
+# css_urls = [ "https://nora.codes/css/style.css", "https://nora.codes/css/fonts.css" ]
 

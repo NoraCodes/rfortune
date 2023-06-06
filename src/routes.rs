@@ -1,5 +1,5 @@
 use crate::quotes::{self, Quote};
-use crate::{SqliteDb, BASE_URL, CSS_URL};
+use crate::{SqliteDb, BASE_URL, CSS_URLS};
 use rocket::request::Form;
 use rocket_contrib::json::Json;
 use rocket_contrib::templates::Template;
@@ -9,21 +9,21 @@ fn base_url() -> Option<String> {
     BASE_URL.read().expect("BASE_URL poisoned").clone()
 }
 
-fn css_url() -> Option<String> {
-    CSS_URL.read().expect("CSS_URL poisoned").clone()
+fn css_urls() -> Option<Vec<String>> {
+    CSS_URLS.read().expect("CSS_URL poisoned").clone()
 }
 
 #[derive(Serialize)]
 struct CoreTemplateContext {
     base: Option<String>,
-    css: Option<String>,
+    css: Option<Vec<String>>,
 }
 
 impl Default for CoreTemplateContext {
     fn default() -> Self {
         Self {
             base: base_url(),
-            css: css_url(),
+            css: css_urls(),
         }
     }
 }
