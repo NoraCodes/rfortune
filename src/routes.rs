@@ -67,7 +67,17 @@ impl QuoteListTemplateContext {
 #[derive(Serialize)]
 struct MessageContext {
     message: String,
-    base: Option<String>,
+    #[serde(flatten)]
+    core: CoreTemplateContext,
+}
+
+impl MessageContext {
+    fn new<S: Into<String>>(message: S) -> Self {
+        Self {
+            message: message.into(),
+            core: Default::default(),
+        }
+    }
 }
 
 #[get("/")]
@@ -103,77 +113,35 @@ pub fn all(mut db: SqliteDb) -> Template {
 
 #[get("/add")]
 pub fn add_form() -> Template {
-    Template::render(
-        "add",
-        &MessageContext {
-            message: "".into(),
-            base: base_url(),
-        },
-    )
+    Template::render("add", &CoreTemplateContext::default())
 }
 
 #[post("/add", data = "<quote_data>")]
 pub fn add(quote_data: Form<Quote>, mut db: SqliteDb) -> Template {
     let mut quote: Quote = quote_data.clone();
     if quote.quote == "" {
-        return Template::render(
-            "add",
-            &MessageContext {
-                base: base_url(),
-                message: "Quote must have text.".into(),
-            },
-        );
+        return Template::render("add", &MessageContext::new("Quote must have text."));
     }
     if quote.author == "" {
-        return Template::render(
-            "add",
-            &MessageContext {
-                base: base_url(),
-                message: "Quote must have an author.".into(),
-            },
-        );
+        return Template::render("add", &MessageContext::new("Quote must have an author."));
     }
     if quote.source == Some("".into()) {
         quote.source = None;
     }
     match quotes::add_quote(&quote, db.connection()) {
-        Some(_) => Template::render(
-            "add",
-            &MessageContext {
-                base: base_url(),
-                message: "Successfully added quote.".into(),
-            },
-        ),
-        None => Template::render(
-            "add",
-            &MessageContext {
-                base: base_url(),
-                message: "Failed to add quote.".into(),
-            },
-        ),
+        Some(_) => Template::render("add", &MessageContext::new("Successfully added quote.")),
+        None => Template::render("add", &MessageContext::new("Failed to add quote.")),
     }
 }
 
 #[get("/api")]
 pub fn api_html() -> Template {
-    Template::render(
-        "api",
-        &MessageContext {
-            base: base_url(),
-            message: "".into(),
-        },
-    )
+    Template::render("api", &CoreTemplateContext::default())
 }
 
 #[catch(404)]
 pub fn error_404() -> Template {
-    Template::render(
-        "404",
-        &MessageContext {
-            base: base_url(),
-            message: "".into(),
-        },
-    )
+    Template::render("404", &CoreTemplateContext::default())
 }
 
 #[get("/json")]

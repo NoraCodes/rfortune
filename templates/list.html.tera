@@ -1,9 +1,9 @@
 {% extends "layout" %}
 {% block content %}
 {% for quote in quotes %}
-<div class='quote-container'>
+<p class='quote-container'>
   <blockquote>{{quote.quote}}</blockquote>
-  <br /> <strong>{{quote.author}}</strong> ({{quote.source_text}})
-</div>
+  <strong>{{quote.author}}</strong> ({{quote.source_text}})
+</p>
 {% endfor %}
 {% endblock content %}
